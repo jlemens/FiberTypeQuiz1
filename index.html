@@ -268,7 +268,45 @@
         max-height: 92vh;
       }
     }
+    .mc-question-block {
+      background: linear-gradient(120deg, #f3eaff 60%, #f6f6fa 100%);
+      border: 2px solid #e3d6fa;
+      box-shadow: 0 4px 18px rgba(162,89,230,0.10);
+      padding: 26px 18px 18px 18px !important;
+      border-radius: 18px !important;
+      margin-bottom: 36px !important;
+    }
+    .mc-question {
+      margin-bottom: 16px !important;
+    }
+    .mc-option {
+      background: #fff;
+      border: 1.5px solid #e3d6fa;
+      border-radius: 10px;
+      margin-bottom: 10px !important;
+      padding: 12px 14px !important;
+      transition: border 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 4px rgba(162,89,230,0.04);
+    }
+    .mc-option input[type='radio']:checked + span {
+      font-weight: 700;
+      color: #a259e6;
+    }
+    .mc-explanation {
+      background: #f6f6fa;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 12px !important;
+    }
   </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EFR49BC29B"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EFR49BC29B');
+  </script>
 </head>
 <body>
   <!-- Main Quiz Container -->
