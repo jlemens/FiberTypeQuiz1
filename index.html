@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Track360 Quiz</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,800&display=swap" rel="stylesheet">
+  <style>
+    /* --- General Styles --- */
+    body {
+      background: #f6f6fa;
+      font-family: 'Montserrat', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .quiz-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(80,0,120,0.10);
+      padding: 32px;
+      color: #222;
+      box-sizing: border-box;
+      transition: border 0.2s;
+    }
+    .quiz-title {
+      color: #a259e6;
+      font-size: 2rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+      word-break: break-word;
+    }
+    .main-menu-btn {
+      background: #a259e6;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 20px 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 18px 0;
+      width: 100%;
+      transition: background 0.2s;
+      box-sizing: border-box;
+      letter-spacing: 0.5px;
+      display: block;
+    }
+    .main-menu-btn:hover, .main-menu-btn:focus {
+      background: #6d2eb1;
+      outline: none;
+    }
+    .centered {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+    }
+    /* --- Responsive --- */
+    @media (max-width: 700px) {
+      .quiz-container {
+        padding: 8px;
+        margin: 12px;
+      }
+      .quiz-title {
+        font-size: 1.3rem;
+      }
+      .main-menu-btn {
+        font-size: 1rem;
+        padding: 14px 0;
+      }
+    }
+    /* --- Fiber Type Choices Styles --- */
+    .ftc-instructions {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #444;
+      font-size: 1.08rem;
+    }
+    .ftc-start-btn, .ftc-home-btn, .ftc-review-btn, .ftc-restart-btn {
+      background: #a259e6;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 18px 8px 0 8px;
+      transition: background 0.2s;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+    .ftc-start-btn:hover, .ftc-home-btn:hover, .ftc-review-btn:hover, .ftc-restart-btn:hover {
+      background: #6d2eb1;
+    }
+    .ftc-question {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 32px 0 18px 0;
+      text-align: center;
+      min-height: 48px;
+    }
+    .ftc-choices {
+      display: flex;
+      justify-content: space-around;
+      margin: 24px 0 16px 0;
+      gap: 24px;
+    }
+    .ftc-choice-btn {
+      flex: 1 1 0;
+      background: #f6f6fa;
+      color: #a259e6;
+      border: 2px solid #a259e6;
+      border-radius: 12px;
+      padding: 24px 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      text-align: center;
+      user-select: none;
+    }
+    .ftc-choice-btn:active {
+      background: #e5d6f7;
+    }
+    .ftc-timer {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #a259e6;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .ftc-timer-wheel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .ftc-timer-svg {
+      width: 56px;
+      height: 56px;
+      display: block;
+    }
+    .ftc-timer-num {
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #a259e6;
+      pointer-events: none;
+    }
+    .ftc-timer-red .ftc-timer-num { color: #e74c3c; }
+    .ftc-timer-red .ftc-timer-svg circle {
+      stroke: #e74c3c;
+    }
+    .ftc-timer-svg circle {
+      transition: stroke 0.2s;
+    }
+    .ftc-feedback-area {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .ftc-feedback-banner {
+      width: 100%;
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+      padding: 6px 0 2px 0;
+      border-radius: 8px;
+      margin: 0 auto;
+      transition: background 0.2s, color 0.2s;
+      max-width: 350px;
+      min-height: 28px;
+      display: inline-block;
+    }
+    .ftc-feedback-correct {
+      background: #e6fbe9;
+      color: #27ae60;
+    }
+    .ftc-feedback-incorrect {
+      background: #fdeaea;
+      color: #e74c3c;
+    }
+    .ftc-feedback-timeup {
+      background: #fdeaea;
+      color: #e74c3c;
+    }
+    .ftc-border-correct {
+      border: 3px solid #27ae60 !important;
+    }
+    .ftc-border-incorrect, .ftc-border-timeup {
+      border: 3px solid #e74c3c !important;
+    }
+    .ftc-tracker {
+      text-align: center;
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 8px;
+    }
+    .ftc-popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ftc-popup-inner {
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px 24px 24px 24px;
+      max-width: 95vw;
+      width: 380px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(80,0,120,0.15);
+      max-height: 90vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ftc-popup-title {
+      color: #a259e6;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .ftc-review-list {
+      text-align: left;
+      margin: 18px 0 0 0;
+      font-size: 1rem;
+      color: #333;
+    }
+    .ftc-review-q {
+      font-weight: 600;
+      margin-top: 12px;
+    }
+    .ftc-review-a {
+      margin-left: 12px;
+      font-weight: 400;
+    }
+    /* --- Multiple Choice Quiz Styles --- */
+    .mc-question-block { transition: box-shadow 0.2s, border 0.2s; }
+    .mc-popup { animation: popIn 0.3s ease-out; }
+    @media (max-width: 700px) {
+      .ftc-popup {
+        align-items: flex-start;
+        padding-top: 24px;
+      }
+      .ftc-popup-inner {
+        width: 98vw;
+        min-width: 0;
+        padding: 24px 6vw 18px 6vw;
+        font-size: 1rem;
+        max-height: 92vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Main Quiz Container -->
+  <div class="quiz-container" id="main-container">
+    <!-- Home Screen -->
+    <div id="home-screen" class="centered">
+      <div class="quiz-title" style="font-size:2.3rem; color:#7d3cff; margin-bottom:10px; letter-spacing:1.5px; text-shadow:0 2px 12px #e5d6f7;">🏠 Home Base</div>
+      <div style="font-size:1.25rem; color:#a259e6; font-weight:700; margin-bottom:18px; text-align:center;">Test your muscle knowledge!<br>Pick a challenge below and see if you're a fiber type genius 💪</div>
+      <div style="display:flex; flex-direction:column; gap:18px; width:100%; max-width:350px; margin:0 auto;">
+        <button class="main-menu-btn" id="fiber-type-btn" style="background:linear-gradient(90deg,#7d3cff 60%,#a259e6 100%);box-shadow:0 2px 12px #e5d6f7;">🔥 Fiber Type Challenge</button>
+        <button class="main-menu-btn" id="multiple-choice-btn" style="background:linear-gradient(90deg,#7d3cff 60%,#a259e6 100%);box-shadow:0 2px 12px #e5d6f7;">🧠 Multiple Choice Quiz</button>
+      </div>
+      <div style="margin-top:32px; color:#888; font-size:0.98rem; text-align:center;">How well do you know your muscle fibers?<br>Challenge yourself and learn something new!</div>
+    </div>
+    <!-- Fiber Type Choices Quiz Placeholder -->
+    <div id="fiber-type-quiz" style="display:none;">
+      <!-- Will be filled by JS -->
+    </div>
+    <!-- Multiple Choice Quiz Placeholder -->
+    <div id="multiple-choice-quiz" style="display:none;">
+      <!-- Will be filled by JS -->
+    </div>
+  </div>
+  <script>
+    // --- JS: Navigation between screens ---
+    const homeScreen = document.getElementById('home-screen');
+    const fiberTypeQuiz = document.getElementById('fiber-type-quiz');
+    const multipleChoiceQuiz = document.getElementById('multiple-choice-quiz');
+    document.getElementById('fiber-type-btn').onclick = () => {
+      homeScreen.style.display = 'none';
+      fiberTypeQuiz.style.display = '';
+      multipleChoiceQuiz.style.display = 'none';
+      showFiberTypeInstructions();
+    };
+    document.getElementById('multiple-choice-btn').onclick = () => {
+      homeScreen.style.display = 'none';
+      fiberTypeQuiz.style.display = 'none';
+      multipleChoiceQuiz.style.display = '';
+      renderMultipleChoiceQuiz();
+    };
+
+    // --- Fiber Type Choices Data ---
+    const ftcQuestions = [
+      { q: 'Walking for 30 minutes at a steady pace', a: 'Type I' },
+      { q: 'Sprinting 100 meters as fast as possible', a: 'Type II' },
+      { q: 'A 3-rep heavy set of barbell back squats at 85–90% 1RM', a: 'Type II' },
+      { q: 'Performing 4 heavy reps of deadlifts at 85% of 1RM', a: 'Type II' },
+      { q: 'A slow tempo back extension held for 45 seconds', a: 'Type I' },
+      { q: 'Drop set of biceps curls with no rest between drops, chasing the burn', a: 'Type I' },
+      { q: '3 sets of 6-rep barbell hip thrusts with long rest periods', a: 'Type II' },
+      { q: 'High-rep (15–20 reps) leg extensions with 30 seconds rest between sets', a: 'Type I' },
+      { q: 'Jump squats or clapping push-ups (explosive movements)', a: 'Type II' },
+      { q: 'Cluster sets of 3 reps on bench press at 90% 1RM', a: 'Type II' },
+    ];
+
+    // --- Fiber Type Choices Quiz Logic ---
+    let ftcState = {};
+
+    function showFiberTypeInstructions() {
+      fiberTypeQuiz.innerHTML = `
+        <div class="quiz-title">Fiber Type Challenge</div>
+        <div class="ftc-instructions">
+          You will be shown an exercise or activity. Choose whether it primarily uses <b>Type I</b> (slow-twitch) or <b>Type II</b> (fast-twitch) muscle fibers.<br><br>
+          <b>You have 10 seconds for each question.</b> Swipe left/right or click a button to answer. Try to get as many correct as you can!
+        </div>
+        <button class="ftc-start-btn">Start Quiz</button>
+        <button class="ftc-home-btn">Return Home</button>
+      `;
+      fiberTypeQuiz.querySelector('.ftc-start-btn').onclick = startFiberTypeQuiz;
+      fiberTypeQuiz.querySelector('.ftc-home-btn').onclick = () => {
+        fiberTypeQuiz.style.display = 'none';
+        homeScreen.style.display = '';
+      };
+    }
+
+    function startFiberTypeQuiz() {
+      ftcState = {
+        current: 0,
+        correct: 0,
+        answers: [],
+        timer: 10,
+        interval: null,
+        finished: false
+      };
+      showFiberTypeQuestion();
+    }
+
+    function showFiberTypeQuestion(feedbackType = null) {
+      // Always clear the timer before starting a new question
+      if (ftcState.interval) {
+        clearInterval(ftcState.interval);
+        ftcState.interval = null;
+      }
+      // Remove any lingering feedback banner and border
+      const container = document.getElementById('main-container');
+      container.classList.remove('ftc-border-correct', 'ftc-border-incorrect', 'ftc-border-timeup');
+      fiberTypeQuiz.querySelectorAll?.('.ftc-feedback-banner').forEach(b => b.remove());
+      if (ftcState.current >= ftcQuestions.length) {
+        ftcState.finished = true;
+        showFiberTypeEndPopup();
+        return;
+      }
+      const qObj = ftcQuestions[ftcState.current];
+      let banner = '';
+      let borderClass = '';
+      if (feedbackType === 'correct') {
+        banner = '<div class="ftc-feedback-banner ftc-feedback-correct">Correct!</div>';
+        borderClass = 'ftc-border-correct';
+      } else if (feedbackType === 'incorrect') {
+        banner = '<div class="ftc-feedback-banner ftc-feedback-incorrect">Incorrect!</div>';
+        borderClass = 'ftc-border-incorrect';
+      } else if (feedbackType === 'timeup') {
+        banner = '<div class="ftc-feedback-banner ftc-feedback-timeup">Time Up!</div>';
+        borderClass = 'ftc-border-timeup';
+      }
+      // Set border class if needed
+      if (borderClass) container.classList.add(borderClass);
+      // Always render a fixed-height feedback area
+      fiberTypeQuiz.innerHTML = `
+        <div class="ftc-feedback-area" style="min-height:36px;">${banner}</div>
+        <div class="quiz-title">Fiber Type Challenge</div>
+        <div class="ftc-timer-wheel" id="ftc-timer-wheel">
+          <div style="position:relative;display:inline-block;">
+            <svg class="ftc-timer-svg" viewBox="0 0 40 40">
+              <circle cx="20" cy="20" r="18" fill="none" stroke="#a259e6" stroke-width="4" stroke-dasharray="113" stroke-dashoffset="0"/>
+            </svg>
+            <div class="ftc-timer-num" id="ftc-timer-num">10</div>
+          </div>
+        </div>
+        <div class="ftc-tracker">Correct: ${ftcState.correct} / ${ftcQuestions.length}</div>
+        <div class="ftc-question">${ftcState.current + 1}. ${qObj.q}</div>
+        <div class="ftc-choices">
+          <button class="ftc-choice-btn" id="ftc-type1" ${feedbackType ? 'disabled style=\'opacity:0.5;cursor:not-allowed;\'' : ''}>Type I</button>
+          <button class="ftc-choice-btn" id="ftc-type2" ${feedbackType ? 'disabled style=\'opacity:0.5;cursor:not-allowed;\'' : ''}>Type II</button>
+        </div>
+        <button class="ftc-home-btn">Return Home</button>
+      `;
+      fiberTypeQuiz.querySelector('.ftc-home-btn').onclick = () => {
+        if (ftcState.interval) clearInterval(ftcState.interval);
+        fiberTypeQuiz.style.display = 'none';
+        homeScreen.style.display = '';
+      };
+      // Timer
+      let t = 10;
+      const timerNum = document.getElementById('ftc-timer-num');
+      const timerWheel = document.getElementById('ftc-timer-wheel');
+      const svgCircle = fiberTypeQuiz.querySelector('.ftc-timer-svg circle');
+      function updateTimerVisual() {
+        timerNum.textContent = t;
+        const pct = t / 10;
+        svgCircle.setAttribute('stroke-dashoffset', 113 * (1 - pct));
+        if (t <= 5) {
+          timerWheel.classList.add('ftc-timer-red');
+        } else {
+          timerWheel.classList.remove('ftc-timer-red');
+        }
+      }
+      updateTimerVisual();
+      // Clear any previous interval before starting a new one
+      if (ftcState.interval) {
+        clearInterval(ftcState.interval);
+        ftcState.interval = null;
+      }
+      ftcState.interval = setInterval(() => {
+        t--;
+        updateTimerVisual();
+        if (t <= 0) {
+          if (ftcState.interval) {
+            clearInterval(ftcState.interval);
+            ftcState.interval = null;
+          }
+          handleFiberTypeAnswer(null); // No answer
+        }
+      }, 1000);
+      // Click only
+      document.getElementById('ftc-type1').onclick = () => handleFiberTypeAnswer('Type I');
+      document.getElementById('ftc-type2').onclick = () => handleFiberTypeAnswer('Type II');
+    }
+
+    function handleFiberTypeAnswer(ans) {
+      if (ftcState.interval) {
+        clearInterval(ftcState.interval);
+        ftcState.interval = null;
+      }
+      const qObj = ftcQuestions[ftcState.current];
+      const correct = ans === qObj.a;
+      let feedbackType = '';
+      if (ans === null) {
+        ftcState.answers.push({ user: null, correct: false });
+        feedbackType = 'timeup';
+      } else {
+        ftcState.answers.push({ user: ans, correct });
+        if (correct) {
+          ftcState.correct++;
+          feedbackType = 'correct';
+        } else {
+          feedbackType = 'incorrect';
+        }
+      }
+
+      // Disable answer buttons during feedback
+      const type1Btn = document.getElementById('ftc-type1');
+      const type2Btn = document.getElementById('ftc-type2');
+      if (type1Btn) type1Btn.disabled = true;
+      if (type2Btn) type2Btn.disabled = true;
+
+      // Show feedback banner and border (on current question)
+      showFiberTypeQuestion(feedbackType);
+
+      // Wait for animation to complete before showing next question
+      setTimeout(() => {
+        // Remove feedback border class before next question
+        const container = document.getElementById('main-container');
+        container.classList.remove('ftc-border-correct', 'ftc-border-incorrect', 'ftc-border-timeup');
+        // Now advance to next question
+        ftcState.current++;
+        showFiberTypeQuestion();
+      }, 2000); // 2 second delay to match animation
+    }
+
+    function showFiberTypeEndPopup() {
+      fiberTypeQuiz.innerHTML = '';
+      const popup = document.createElement('div');
+      popup.className = 'ftc-popup';
+      // Feedback logic
+      let feedback = '';
+      if (ftcState.correct <= 5) {
+        feedback = "A good start! Review your answers and give it another shot.";
+      } else if (ftcState.correct <= 8) {
+        feedback = "Good job! A little more practice and you'll be a fiber type pro.";
+      } else if (ftcState.correct === 9) {
+        feedback = "Great job! You really know your stuff—just one away from perfect!";
+      } else if (ftcState.correct === 10) {
+        feedback = "Perfect score! You know your muscle fibers inside and out.";
+      }
+      popup.innerHTML = `
+        <div class="ftc-popup-inner">
+          <div class="ftc-popup-title">Quiz Complete!</div>
+          <div style="margin-bottom:8px;">You got <b>${ftcState.correct} / ${ftcQuestions.length}</b> correct.</div>
+          <div style="margin-bottom:16px; color:#a259e6; font-weight:600;">${feedback}</div>
+          <button class="ftc-review-btn">Review Answers</button>
+          <button class="ftc-restart-btn">Restart</button>
+          <button class="ftc-home-btn">Return Home</button>
+        </div>
+      `;
+      document.body.appendChild(popup);
+      setBodyScrollLock(true);
+      popup.querySelector('.ftc-review-btn').onclick = () => {
+        // Remove all popups in case of duplicates
+        document.querySelectorAll('.ftc-popup').forEach(p => p.remove());
+        setBodyScrollLock(false);
+        showFiberTypeReview();
+      };
+      popup.querySelector('.ftc-restart-btn').onclick = () => {
+        document.querySelectorAll('.ftc-popup').forEach(p => p.remove());
+        setBodyScrollLock(false);
+        startFiberTypeQuiz();
+      };
+      popup.querySelector('.ftc-home-btn').onclick = () => {
+        document.querySelectorAll('.ftc-popup').forEach(p => p.remove());
+        setBodyScrollLock(false);
+        fiberTypeQuiz.style.display = 'none';
+        homeScreen.style.display = '';
+      };
+    }
+
+    function showFiberTypeReview() {
+      let html = `<div class="quiz-title">Review Answers</div><div class="ftc-review-list">`;
+      ftcQuestions.forEach((q, i) => {
+        const user = ftcState.answers[i]?.user;
+        const correct = ftcState.answers[i]?.correct;
+        html += `<div class="ftc-review-q">${i+1}. ${q.q}</div>`;
+        html += `<div class="ftc-review-a">Your answer: <b>${user ? user : '<i>No answer</i>'}</b> ${correct ? '✅' : '❌'}<br>Correct: <b>${q.a}</b></div>`;
+      });
+      html += `</div><button class="ftc-restart-btn">Restart</button><button class="ftc-home-btn">Return Home</button>`;
+      fiberTypeQuiz.innerHTML = html;
+      fiberTypeQuiz.style.display = '';
+      document.getElementById('main-container').classList.remove('ftc-border-correct', 'ftc-border-incorrect', 'ftc-border-timeup');
+      fiberTypeQuiz.querySelector('.ftc-restart-btn').onclick = () => {
+        showFiberTypeInstructions();
+      };
+      fiberTypeQuiz.querySelector('.ftc-home-btn').onclick = () => {
+        fiberTypeQuiz.style.display = 'none';
+        homeScreen.style.display = '';
+      };
+    }
+
+    // =============================
+    // --- Multiple Choice Quiz Logic ---
+    // =============================
+
+    // Multiple choice questions data (from Fiber type quiz text.txt)
+    const mcQuestions = [
+      {
+        q: 'What is one of the main features of slow-twitch (Type I) muscle fibers?',
+        options: [
+          'They contract fast and tire quickly',
+          'They are built for endurance and don\'t fatigue/tire easily',
+          'They create a lot of power in a short time',
+          'They only work during heavy weightlifting'
+        ],
+        answer: 1,
+        explanation: 'Type I fibers are slow-twitch and great for long-lasting, low-intensity activity - they don\'t tire easily.'
+      },
+      {
+        q: 'What makes fast-twitch (Type II) muscle fibers different from slow-twitch fibers?',
+        options: [
+          'They\'re better for long-distance running',
+          'They use oxygen to keep going for hours',
+          'They create more power but get tired faster',
+          'They are small and weak compared to slow-twitch fibers'
+        ],
+        answer: 2,
+        explanation: 'Type II fibers are fast and strong, great for powerful moves like sprinting or jumping, but they fatigue quickly.'
+      },
+      {
+        q: 'Which of the following is true about the muscle fiber makeup in most people?',
+        options: [
+          'All muscles in the body are completely slow-twitch or fast-twitch, not both',
+          'Everyone has the same muscle fiber type in each muscle',
+          'Most muscles are a mix of both fiber types (type 1 and type 2), and the exact amount can vary between people',
+          'You\'re born with one fiber type and it never changes'
+        ],
+        answer: 2,
+        explanation: 'Most muscles have a mix of slow- and fast-twitch fibers. Your genetics and training history influence the exact balance.'
+      },
+      {
+        q: 'How do satellite cells (muscle stem cells) help muscles grow, and how do slow-twitch and fast-twitch fibers differ in using them?',
+        options: [
+          'Satellite cells only help slow-twitch fibers grow because they have more of them',
+          'Both fiber types use satellite cells, but fast-twitch fibers rely on them more during muscle growth',
+          'Satellite cells only help repair injuries, not muscle growth',
+          'Fast-twitch fibers never use satellite cells - they grow just by storing more protein'
+        ],
+        answer: 1,
+        explanation: 'While slow-twitch fibers have more satellite cells at rest, fast-twitch fibers show a bigger satellite cell response during strength training and rely on them heavily for growth.'
+      },
+      {
+        q: 'What is one reason fast-twitch (Type II) muscle fibers may grow more from strength training than slow-twitch (Type I) fibers?',
+        options: [
+          'They have more oxygen, which boosts growth',
+          'They are used more during long, endurance workouts',
+          'They have a higher capacity for muscle protein synthesis and stronger activation of growth pathways like mTOR',
+          'Slow-twitch fibers can\'t build protein after exercise'
+        ],
+        answer: 2,
+        explanation: 'Fast-twitch fibers contain more translational machinery and activate the mTOR signaling pathway more strongly, giving them a greater ability to synthesize protein and grow in response to training.'
+      },
+      {
+        q: 'How do slow-twitch (Type I) and fast-twitch (Type II) muscle fibers differ in how they grow (hypertrophy)?',
+        options: [
+          'Type I fibers only grow from heavy lifting, while Type II grow from endurance training',
+          'Type I fibers grow better with metabolic stress and continuous effort, while Type II fibers grow more from heavy tension and muscle damage',
+          'Both fiber types grow the same way regardless of training style',
+          'Type II fibers don\'t grow at all unless they\'re injured'
+        ],
+        answer: 1,
+        explanation: 'Type I fibers respond well to long, high-rep sets that build up fatigue and metabolic stress, while Type II fibers respond more to heavy loads and eccentric movements that cause muscle tension and damage.'
+      },
+      {
+        q: 'Why is high-rep, low-load training especially effective for growing slow-twitch (Type I) muscle fibers?',
+        options: [
+          'It reduces oxygen in the muscle, which speeds up growth',
+          'It builds up metabolic stress that Type I fibers respond well to',
+          'It makes fast-twitch fibers contract faster',
+          'It avoids muscle fatigue, which is key for hypertrophy'
+        ],
+        answer: 1,
+        explanation: 'Type I fibers are resistant to fatigue, so longer sets with high reps create more metabolic stress (like lactate buildup), which helps trigger growth in those fibers.'
+      },
+      {
+        q: 'What role does "time under tension" play in stimulating muscle growth, especially in Type I fibers?',
+        options: [
+          'It shortens workouts while increasing muscle damage',
+          'It keeps the heart rate low during training',
+          'It helps keep the muscle working long enough to fatigue slow-twitch fibers and build up growth signals',
+          'It prevents fast-twitch fibers from being recruited'
+        ],
+        answer: 2,
+        explanation: 'Longer sets increase the time a muscle is under tension, which helps fully fatigue slow-twitch fibers and enhances metabolic stress - both of which promote hypertrophy in Type I fibers.'
+      },
+      {
+        q: 'Which of the following is true about stretch-mediated hypertrophy (muscle growth from stretching under load)?',
+        options: [
+          'Only fast-twitch (Type II) fibers can grow from it',
+          'All muscle fibers can benefit, but fast-twitch fibers tend to respond the most',
+          'It only happens during endurance training',
+          'Slow-twitch (Type I) fibers grow more than fast-twitch fibers from loaded stretching'
+        ],
+        answer: 1,
+        explanation: 'Both fiber types can grow from stretch under load, but fast-twitch fibers usually show the biggest response due to their higher sensitivity to tension and damage during eccentric loading.'
+      },
+      {
+        q: 'True or False: You\'ll only need to lift heavy weights to build muscle - lighter weights won\'t lead to growth.',
+        options: [
+          'True',
+          'False'
+        ],
+        answer: 1,
+        explanation: 'Research shows that lifting lighter weights to near failure can stimulate just as much muscle growth as heavy weights. The key factor is training effort, not just how much weight is lifted.'
+      },
+      {
+        q: 'True or False: High-rep training only works your slow-twitch (Type I) muscle fibers and doesn\'t help build muscle in your fast-twitch (Type II) fibers.',
+        options: [
+          'True',
+          'False'
+        ],
+        answer: 1,
+        explanation: 'When taken to failure, high-rep training recruits both slow- and fast-twitch fibers. As slow-twitch fibers fatigue, fast-twitch fibers are brought in to finish the set - helping both fiber types grow.'
+      },
+      {
+        q: 'True or False: You need completely different workouts to train slow-twitch and fast-twitch muscle fibers effectively.',
+        options: [
+          'True',
+          'False'
+        ],
+        answer: 1,
+        explanation: 'While certain training styles may emphasize one fiber type more than the other, both fiber types are usually activated during challenging sets. A well-rounded program with varied rep ranges and intensities will stimulate both types effectively - no need to strictly separate them.'
+      }
+    ];
+
+    // --- Multiple Choice Quiz State ---
+    let mcState = {
+      answers: Array(mcQuestions.length).fill(null),
+      correctCount: 0
+    };
+
+    function renderMultipleChoiceQuiz() {
+      // Calculate correct count
+      mcState.correctCount = mcState.answers.reduce((acc, ans, i) => acc + (ans === mcQuestions[i].answer ? 1 : 0), 0);
+      // Tracker
+      let html = `<div class='quiz-title'>Multiple Choice Quiz</div>`;
+      html += `<div style='text-align:center;font-weight:600;color:#a259e6;margin-bottom:18px;'>${mcState.correctCount} / ${mcQuestions.length} correct</div>`;
+      // Questions
+      html += `<form id='mc-quiz-form'>`;
+      mcQuestions.forEach((q, i) => {
+        html += `<div class='mc-question-block' style='margin-bottom:32px;padding:18px 16px 12px 16px;background:#fafaff;border-radius:12px;box-shadow:0 2px 8px rgba(80,0,120,0.04);'>`;
+        html += `<div class='mc-question' style='font-weight:700;margin-bottom:10px;'>${i+1}. ${q.q}</div>`;
+        q.options.forEach((opt, j) => {
+          const checked = mcState.answers[i] === j ? 'checked' : '';
+          html += `<label class='mc-option' style='display:block;margin-bottom:8px;cursor:pointer;padding:10px 12px;border-radius:8px;border:2px solid transparent;transition:border 0.2s;'>`;
+          html += `<input type='radio' name='mcq${i}' value='${j}' style='margin-right:10px;' ${checked}>`;
+          html += `<span>${opt}</span></label>`;
+        });
+        // Explanation
+        if (mcState.answers[i] !== null) {
+          const isCorrect = mcState.answers[i] === q.answer;
+          html += `<div class='mc-explanation' style='margin-top:8px;color:${isCorrect ? '#27ae60' : '#e74c3c'};font-weight:600;'>${isCorrect ? 'Correct!' : 'Incorrect.'} <span style='color:#444;font-weight:400;'>${q.explanation}</span></div>`;
+        }
+        html += `</div>`;
+      });
+      html += `</form>`;
+      // Submit, Reset, and Home buttons
+      html += `<button id='mc-submit-btn' style='background:#a259e6;color:#fff;border:none;border-radius:8px;padding:14px 32px;font-size:1.1rem;font-weight:700;cursor:pointer;margin:18px 0 0 0;display:block;width:100%;transition:background 0.2s;'>Submit Answers</button>`;
+      html += `<button id='mc-reset-btn' style='background:#fff;color:#a259e6;border:2px solid #a259e6;border-radius:8px;padding:12px 32px;font-size:1.05rem;font-weight:700;cursor:pointer;margin:12px 0 0 0;display:block;width:100%;transition:background 0.2s;'>Reset Answers</button>`;
+      html += `<button id='mc-home-btn' style='background:#fff;color:#a259e6;border:2px solid #a259e6;border-radius:8px;padding:12px 32px;font-size:1.05rem;font-weight:700;cursor:pointer;margin:12px 0 0 0;display:block;width:100%;transition:background 0.2s;'>Return to Home</button>`;
+      multipleChoiceQuiz.innerHTML = html;
+
+      // Add event listeners for radio buttons
+      mcQuestions.forEach((q, i) => {
+        const radios = multipleChoiceQuiz.querySelectorAll(`input[name='mcq${i}']`);
+        radios.forEach(radio => {
+          radio.onchange = (e) => {
+            mcState.answers[i] = parseInt(e.target.value);
+            renderMultipleChoiceQuiz();
+          };
+        });
+      });
+      // Submit button
+      document.getElementById('mc-submit-btn').onclick = () => {
+        showMCSubmitPopup();
+      };
+      // Reset button
+      document.getElementById('mc-reset-btn').onclick = () => {
+        mcState.answers = Array(mcQuestions.length).fill(null);
+        renderMultipleChoiceQuiz();
+      };
+      // Home button
+      document.getElementById('mc-home-btn').onclick = () => {
+        multipleChoiceQuiz.style.display = 'none';
+        homeScreen.style.display = '';
+      };
+    }
+
+    function showMCSubmitPopup() {
+      // Remove any existing popup
+      document.querySelectorAll('.mc-popup').forEach(p => p.remove());
+      // Calculate score
+      const correctCount = mcState.answers.reduce((acc, ans, i) => acc + (ans === mcQuestions[i].answer ? 1 : 0), 0);
+      let feedback = '';
+      if (correctCount <= 6) {
+        feedback = "You're getting started—review the explanations and give it another shot!";
+      } else if (correctCount <= 10) {
+        feedback = "You're almost there! Review your answers and try for a perfect score.";
+      } else if (correctCount === 11) {
+        feedback = "So close! Just one question away from perfection—review your answers to find the last detail.";
+      } else if (correctCount === 12) {
+        feedback = "Outstanding! You got every question correct—muscle fiber master!";
+      }
+      const popup = document.createElement('div');
+      popup.className = 'mc-popup';
+      popup.style.position = 'fixed';
+      popup.style.top = '0';
+      popup.style.left = '0';
+      popup.style.right = '0';
+      popup.style.bottom = '0';
+      popup.style.background = 'rgba(0,0,0,0.6)';
+      popup.style.zIndex = '10000';
+      popup.style.display = 'flex';
+      popup.style.alignItems = 'center';
+      popup.style.justifyContent = 'center';
+      popup.innerHTML = `<div style='background:#fff;padding:36px 24px 24px 24px;border-radius:16px;max-width:95vw;width:380px;text-align:center;box-shadow:0 4px 24px rgba(80,0,120,0.15);'>
+        <div style='color:#a259e6;font-size:1.3rem;font-weight:800;margin-bottom:18px;'>${correctCount} / 12 correct</div>
+        <div style='font-size:1.1rem;margin-bottom:18px;'>${feedback}</div>
+        <button id='mc-popup-review' style='background:#a259e6;color:#fff;border:none;padding:14px 32px;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;margin:8px 0 0 0;'>Return to Quiz (Review)</button>
+        <button id='mc-popup-reset' style='background:#fff;color:#a259e6;border:2px solid #a259e6;border-radius:8px;padding:12px 32px;font-size:1.05rem;font-weight:700;cursor:pointer;margin:12px 0 0 0;'>Reset Answers</button>
+        <button id='mc-popup-home' style='background:#fff;color:#a259e6;border:2px solid #a259e6;border-radius:8px;padding:12px 32px;font-size:1.05rem;font-weight:700;cursor:pointer;margin:12px 0 0 0;'>Return to Home</button>
+      </div>`;
+      document.body.appendChild(popup);
+      setBodyScrollLock(true);
+      document.getElementById('mc-popup-review').onclick = () => {
+        popup.remove();
+        setBodyScrollLock(false);
+      };
+      document.getElementById('mc-popup-reset').onclick = () => {
+        popup.remove();
+        setBodyScrollLock(false);
+        mcState.answers = Array(mcQuestions.length).fill(null);
+        renderMultipleChoiceQuiz();
+      };
+      document.getElementById('mc-popup-home').onclick = () => {
+        popup.remove();
+        setBodyScrollLock(false);
+        multipleChoiceQuiz.style.display = 'none';
+        homeScreen.style.display = '';
+      };
+    }
+
+    // Prevent background scroll when popup is open (iOS/mobile fix)
+    function setBodyScrollLock(lock) {
+      if (lock) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.touchAction = 'none';
+      } else {
+        document.body.style.overflow = '';
+        document.body.style.touchAction = '';
+      }
+    }
+  </script>
+</body>
+</html>
